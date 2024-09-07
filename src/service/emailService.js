@@ -224,13 +224,11 @@ const updateDraft = async (req, res) => {
             return res.status(400).send({ message: 'Email is not a draft' });
         }
 
-        // Find the user by their ID (the sender's ID is stored in the 'sender' field)
         const user = await userModel.findById(email.sender);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
 
-        // Send the email using the sender's email
         await sendMail({
             from: user.email,
             to: email.recipients,
@@ -238,7 +236,6 @@ const updateDraft = async (req, res) => {
             text: email.body
         });
 
-        // Update the draft status to 'sent'
         email.status = 'sent';
         email.draft = false;
         await email.save();
